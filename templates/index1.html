@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service Question Answering</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Client Query Resolution</h1>
+        {% if not error %}
+        <form id="question-form" method="POST" action="/ask">
+            <label for="question">Enter your question:</label>
+            <input type="text" id="question" name="question" required>
+            <button type="submit">Submit</button>
+        </form>
+        {% endif %}
+        <div id="response">
+            {% if question_exists %}
+            <div class="response">
+                <p><strong>Question:</strong> {{ question }}</p>
+                <p><strong>Answer:</strong> {{ answers[0].Answer }}</p>
+                <p><strong>Relevance Score:</strong> {{ score }}</p>
+            </div>
+            {% endif %}
+            {% if error %}
+            <div class="answer-to-enter">
+                <p><strong>Question:</strong> {{ question }}</p>
+                <form id="answer-form" method="POST" action="/submit_answer">
+                    <label for="answer">Provide an answer:</label>
+                    <input type="hidden" name="question" value="{{ question }}">
+                    <input type="text" id="answer" name="answer" required>
+                    <button type="submit">Submit Answer</button>
+                </form>
+            </div>
+            {% endif %}
+            {% if answers and not question_exists %}
+            <div class="responses">
+                <p><strong>Question:</strong> {{ question }}</p>
+                {% for answer in answers %}
+                <div class="response">
+                    <p><strong>Answer:</strong> {{ answer.Answer }}</p>
+                    <p><strong>Relevance Score:</strong> {{ answer.score }}</p>
+                    <p><strong>Similar Question:</strong> {{ answer.Question }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>
